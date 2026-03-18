@@ -278,4 +278,4 @@ def issue_raise():
     return render_template('issue_raise.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
