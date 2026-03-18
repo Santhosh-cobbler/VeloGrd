@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeloGrid | Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Shared styles with login for consistency */
+        body { background: #0f172a; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; }
+        .container { background: rgba(30, 41, 59, 0.7); padding: 2.5rem; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { margin-bottom: 0.5rem; color: #10b981; font-weight: 600; } /* Green for registration */
+        p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .input-group { margin-bottom: 1rem; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #cbd5e1; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #1e293b; color: white; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #10b981; }
+        button { width: 100%; padding: 12px; background: #10b981; border: none; border-radius: 8px; color: #0f172a; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #34d399; }
+        .footer-link { margin-top: 20px; font-size: 0.85rem; color: #94a3b8; text-align: center; }
+        .footer-link a { color: #10b981; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Join VeloGrid</h2>
+        <p>Create your engineer account</p>
+        <form action="/register" method="POST">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="fullname" placeholder="John Doe" required>
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="airtel.id@example.com" required>
+            </div>
+            <div class="input-group">
+                <label>Create Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+        <div class="footer-link">
+            Already have an account? <a href="/login">Log in here</a>
+        </div>
+    </div>
+</body>
+</html>

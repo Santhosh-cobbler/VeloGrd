@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeloGrid | My Records</title>
+    <style>
+        :root { --bg: #020617; --glass: rgba(30, 41, 59, 0.5); --accent: #22d3ee; --border: rgba(255, 255, 255, 0.1); }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; overflow-x: hidden; }
+
+        #nav-trigger { display: none; }
+
+        nav { background: var(--glass); backdrop-filter: blur(12px); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; color: var(--accent); text-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
+
+        .profile-trigger { cursor: pointer; width: 35px; height: 35px; border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--accent); font-weight: bold; }
+        .profile-trigger:hover { background: var(--accent); color: var(--bg); }
+
+        .sidebar { position: fixed; top: 0; right: -350px; width: 300px; height: 100%; background: #0f172a; border-left: 1px solid var(--border); z-index: 1000; transition: 0.4s ease; padding: 2rem; box-sizing: border-box; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 999; backdrop-filter: blur(4px); }
+        #nav-trigger:checked ~ .sidebar { right: 0; }
+        #nav-trigger:checked ~ .sidebar-overlay { display: block; }
+
+        .profile-header { text-align: center; margin-bottom: 2rem; }
+        .avatar-circle { width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.5rem; }
+        .user-detail { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .user-detail label { display: block; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
+        .logout-btn { margin-top: 2rem; color: #ef4444; text-decoration: none; display: block; font-weight: 600; padding: 10px; border: 1px solid #ef4444; border-radius: 10px; text-align: center; }
+        .logout-btn:hover { background: #ef4444; color: white; }
+
+        .container { max-width: 1100px; margin: 3rem auto; padding: 0 20px; }
+        .header-section { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+        h1 { font-size: 2.5rem; letter-spacing: -2px; margin: 0.5rem 0; }
+        .muted { color: #94a3b8; font-size: 0.9rem; }
+
+        .btn-back { background: var(--glass); color: var(--accent); padding: 0.7rem 1.5rem; border-radius: 14px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); transition: 0.3s; }
+        .btn-back:hover { border-color: var(--accent); background: rgba(34,211,238,0.1); }
+
+        .stats-row { display: flex; gap: 16px; margin-bottom: 2rem; flex-wrap: wrap; }
+        .stat-pill { background: var(--glass); border: 1px solid var(--border); border-radius: 14px; padding: 0.8rem 1.4rem; font-size: 0.8rem; color: #94a3b8; }
+        .stat-pill span { color: var(--accent); font-weight: 700; font-size: 1rem; display: block; }
+
+        .table-wrap { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; background: var(--glass); backdrop-filter: blur(12px); }
+        thead tr { border-bottom: 1px solid var(--border); }
+        thead th { padding: 1rem 1.2rem; text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); white-space: nowrap; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: rgba(34, 211, 238, 0.05); }
+        tbody td { padding: 1rem 1.2rem; font-size: 0.85rem; color: #cbd5e1; white-space: nowrap; }
+        tbody td:first-child { color: #f8fafc; font-weight: 600; }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .badge-install { background: rgba(34,211,238,0.15); color: var(--accent); border: 1px solid rgba(34,211,238,0.3); }
+        .badge-done { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #475569; }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+        .issue-btn { position: fixed; bottom: 30px; right: 30px; background: #1e293b; border: 1px solid #ef4444; color: #ef4444; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <input type="checkbox" id="nav-trigger">
+
+    <nav>
+        <div class="logo">VELOGRID</div>
+        <label for="nav-trigger" class="profile-trigger">👤</label>
+    </nav>
+
+    <label for="nav-trigger" class="sidebar-overlay"></label>
+
+    <div class="sidebar">
+        <div class="profile-header">
+            <div class="avatar-circle">E</div>
+            <h3 style="margin: 0;">Engineer Profile</h3>
+            <p class="muted">Field Ops</p>
+        </div>
+        <div class="user-detail">
+            <label>Name</label>
+            <span>{{ user_name if user_name else 'Guest' }}</span>
+        </div>
+        <div class="user-detail">
+            <label>Email</label>
+            <span style="font-size: 0.8rem;">{{ user_email }}</span>
+        </div>
+        <a href="/logout" class="logout-btn">Sign Out</a>
+    </div>
+
+    <div class="container">
+        <div class="header-section">
+            <div>
+                <p class="muted">Airtel Infrastructure Management</p>
+                <h1>My Records</h1>
+            </div>
+            <a href="{{url_for('dashboard')}}" class="btn-back">← Back to Dashboard</a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-pill">
+                <span>{{ total }}</span>
+                Total Records
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+            {% if records %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order ID</th>
+                        <th>DSL ID</th>
+                        <th>Tariff Plan</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in records %}
+                    <tr>
+                        <td style="color:#475569;">{{ loop.index }}</td>
+                        <td>{{ r.id or '—' }}</td>
+                        <td style="color:var(--accent);">{{ r.DSLID or '—' }}</td>
+                        <td>{{ r.Tariff_plan or '—' }}</td>
+                        <td>{{ r.date or '—' }}</td>
+                        <td><span class="badge badge-install">{{ r.Type or 'Install' }}</span></td>
+                        <td style="white-space:normal; font-size:0.78rem; max-width:200px;">{{ r.Address or '—' }}</td>
+                        <td><span class="badge badge-done">{{ r.status or 'Completed' }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="icon">📭</div>
+                <p>No records found.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{url_for('issue_raise')}}" class="issue-btn">RAISE ISSUE</a>
+
+</body>
+</html>

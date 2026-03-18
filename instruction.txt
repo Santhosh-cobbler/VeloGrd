@@ -1,0 +1,9 @@
+1. create a supabase in qcubiix@gmail.com
+2. create project and add UUID
+3. create a login and register page with working
+4. focus to build the OCR with work on correct way
+5. connect the OCR model to supabase
+6. test it
+7. deploy it
+
+9. work with admin
